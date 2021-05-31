@@ -11,8 +11,9 @@ export default gql`
     githubUsername: String
     createdAt: String!
     updatedAt: String!
-  }
-  type Query {
-    hello: String
+    following(username: String!, page: Int!): [User]
+    followers(username: String!, page: Int!): [User]
+    totalFollowing: Int!
+    totalFollowers: Int!
   }
 `;
