@@ -22,16 +22,16 @@ export default {
           },
         },
       }),
-    followers: async (_, { username, page }) => {
+    followers: async ({ id }, { page }) => {
       const ok = await client.user.findUnique({
-        where: { username },
+        where: { id },
         select: { id: true },
       });
       if (!ok) {
         return [];
       }
       const aFollowers = await client.user
-        .findUnique({ where: { username } })
+        .findUnique({ where: { id } })
         .followers({
           take: 5,
           skip: (page - 1) * 5,
@@ -40,9 +40,9 @@ export default {
 
       return aFollowers;
     },
-    following: async (_, { username, page }) => {
+    following: async ({ id }, { page }) => {
       const ok = await client.user.findUnique({
-        where: { username },
+        where: { id },
         select: { id: true },
       });
       if (!ok) {
@@ -50,7 +50,7 @@ export default {
       }
 
       const aFollowing = await client.user
-        .findUnique({ where: { username } })
+        .findUnique({ where: { id } })
         .following({
           take: 5,
           skip: (page - 1) * 5,

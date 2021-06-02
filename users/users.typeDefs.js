@@ -9,11 +9,12 @@ export default gql`
     location: String
     avatarURL: String
     githubUsername: String
-    createdAt: String!
-    updatedAt: String!
-    following(username: String!, page: Int!): [User]
-    followers(username: String!, page: Int!): [User]
+    coffeeShop: [CoffeeShop]
+    following(page: Int!): [User]
+    followers(page: Int!): [User]
     totalFollowing: Int!
     totalFollowers: Int!
+    createdAt: String!
+    updatedAt: String!
   }
 `;
