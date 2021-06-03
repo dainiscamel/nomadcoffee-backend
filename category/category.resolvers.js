@@ -2,10 +2,15 @@ import client from "../client";
 
 export default {
   Category: {
-    totalShops: (_, { page }) =>
+    totalShops: ({ id }) =>
       client.coffeeShop.count({
-        take: 5,
-        skip: (page - 1) * 5,
+        where: {
+          categories: {
+            some: {
+              id,
+            },
+          },
+        },
       }),
   },
 };

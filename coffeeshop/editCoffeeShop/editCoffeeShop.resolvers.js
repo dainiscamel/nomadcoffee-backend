@@ -1,7 +1,7 @@
 import { processCategory } from "../../category/category.utils";
 import client from "../../client";
-import { createWriteStream } from "fs";
 import { protectedResolver } from "../../users/users.utils";
+import { processFile } from "../../shared/shared.utils";
 
 export default {
   Mutation: {
@@ -11,7 +11,6 @@ export default {
         { name, latitude, longitude, photos, categories },
         { loggedInUser }
       ) => {
-        let photoObj = [];
         let categoryObj = [];
         let photoUrl = [];
         const oldCoffeeShop = await client.coffeeShop.findFirst({
@@ -36,20 +35,9 @@ export default {
         }
 
         if (photos) {
-          photoObj = photos;
-
-          const { filename, createReadStream } = await photos;
-
-          const newFilename = `${loggedInUser.id}-${Date.now()}-${filename}`;
-          const readStream = createReadStream();
-          const writeStream = createWriteStream(
-            process.cwd() + "/uploads/" + newFilename
-          );
-          readStream.pipe(writeStream);
-
-          photoUrl = `http://localhost:4000/static/${newFilename}`;
+          photoUrl = await processFile(photos, loggedInUser.id);
         }
-        console.log("photoUrl", photoUrl);
+
         categoryObj = processCategory(categories);
         const ok = await client.coffeeShop.update({
           where: {
@@ -80,8 +68,7 @@ export default {
             categories: true,
           },
         });
-        console.log(categoryObj);
-        console.log(ok);
+
         if (ok) {
           return {
             ok: true,
