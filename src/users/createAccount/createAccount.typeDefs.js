@@ -10,7 +10,7 @@ export default gql`
     createAccount(
       username: String!
       email: String!
-      name: String
+      name: String!
       password: String!
     ): createAccountResult!
   }
