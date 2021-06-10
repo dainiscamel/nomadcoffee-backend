@@ -3,12 +3,16 @@ import { protectedResolver } from "../../users/users.utils";
 
 export default {
   Query: {
-    seeCategory: protectedResolver((_, { id }) => {
-      return client.category.findUnique({
-        where: {
-          id,
-        },
-      });
-    }),
+    seeCategory: (_, { id, page }) =>
+      client.category
+        .findUnique({
+          where: {
+            id,
+          },
+        })
+        .shops({
+          take: 5,
+          skip: (page - 1) * 5,
+        }),
   },
 };
