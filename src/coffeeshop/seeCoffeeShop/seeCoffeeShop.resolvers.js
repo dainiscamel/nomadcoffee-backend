@@ -10,6 +10,7 @@ export default {
         },
         include: {
           categories: true,
+          photos: true,
         },
       });
     }),
