@@ -8,21 +8,14 @@ export default {
     editCoffeeShop: protectedResolver(
       async (
         _,
-        { name, latitude, longitude, photos, categories },
+        { id, name, latitude, longitude, photos, categories },
         { loggedInUser }
       ) => {
         let categoryObj = [];
         let photoUrl = [];
         const oldCoffeeShop = await client.coffeeShop.findFirst({
           where: {
-            AND: [
-              {
-                user: {
-                  id: loggedInUser.id,
-                },
-              },
-              { name },
-            ],
+            id,
           },
           include: {
             categories: { select: { name: true } },
@@ -47,14 +40,15 @@ export default {
             name,
             latitude,
             longitude,
-
-            photos: {
-              deleteMany: oldCoffeeShop.photos,
-              connectOrCreate: {
-                where: { url: photoUrl },
-                create: { url: photoUrl },
+            ...(photoUrl.length > 0 && {
+              photos: {
+                deleteMany: oldCoffeeShop.photos,
+                connectOrCreate: {
+                  where: { url: photoUrl },
+                  create: { url: photoUrl },
+                },
               },
-            },
+            }),
 
             ...(categoryObj.length > 0 && {
               categories: {

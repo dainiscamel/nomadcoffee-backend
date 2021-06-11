@@ -1,11 +1,11 @@
 import { gql } from "apollo-server-core";
 
 export default gql`
-  type RemoveCoffeeShopResult {
+  type DeleteCoffeeShopResult {
     ok: Boolean!
     error: String
   }
   type Mutation {
-    removeCoffeeShop(id: Int!): RemoveCoffeeShopResult!
+    deleteCoffeeShop(id: Int!): DeleteCoffeeShopResult!
   }
 `;
