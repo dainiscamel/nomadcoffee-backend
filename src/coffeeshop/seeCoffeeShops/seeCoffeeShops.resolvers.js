@@ -2,14 +2,14 @@ import client from "../../client";
 
 export default {
   Query: {
-    seeCoffeeShops: (_, { page }) =>
+    seeCoffeeShops: (_, { offset }) =>
       client.coffeeShop.findMany({
+        take: 2,
+        skip: offset,
         include: {
           photos: true,
           categories: true,
         },
-        take: 5,
-        skip: (page - 1) * 5,
       }),
   },
 };

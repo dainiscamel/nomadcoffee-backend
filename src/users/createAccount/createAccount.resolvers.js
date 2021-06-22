@@ -36,7 +36,7 @@ export default {
         console.log(e);
         return {
           ok: false,
-          error: "Can't create account :(",
+          error: "This username/email is already taken.",
         };
       }
     },
