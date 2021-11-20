@@ -1,5 +1,9 @@
-import { processCategory } from "../../category/category.utils.js";
 import client from "../../client";
+import {
+  getImageUrls,
+  processCategory,
+  uploadS3,
+} from "../../shared/shared.utils";
 import { protectedResolver } from "../../users/users.utils";
 
 export default {
@@ -7,29 +11,23 @@ export default {
     createCoffeeShop: protectedResolver(
       async (
         _,
-        { name, latitude, longitude, categories },
+        { name, latitude, longitude, photos, categories },
         { loggedInUser }
       ) => {
-        // 이미 존재하는 커피샵인지 찾기
-        // const existingCoffeeShop = await client.coffeeShop.findFirst({
-        //   where: {
-        //     AND: [
-        //       {
-        //         name,
-        //       },
-        //       {
-        //         latitude,
-        //       },
-        //       {
-        //         longitude,
-        //       },
-        //     ],
-        //   },
-        // });
-        // console.log("existingCoffeeShop", existingCoffeeShop);
-        // 없으면 생성
-        let categoryObj = [];
-        categoryObj = processCategory(categories);
+        // console.log(name, latitude, longitude, photos, categories);
+        let categoryObj = null;
+        let url = null;
+
+        if (categories && categories !== []) {
+          categoryObj = processCategory(categories);
+        }
+
+        if (photos && photos !== []) {
+          // url = await getImageUrls(photos, loggedInUser);
+          url = await uploadS3(photos, loggedInUser.id, "uploads");
+        }
+        console.log("카테고리", categoryObj);
+        console.log("사진", url);
         const ok = await client.coffeeShop.create({
           data: {
             name,
@@ -40,11 +38,25 @@ export default {
                 id: loggedInUser.id,
               },
             },
-            ...(categoryObj.length > 0 && {
+            ...(categoryObj?.length > 0 && {
               categories: {
                 connectOrCreate: categoryObj,
               },
             }),
+            // photos: photosObj,
+            ...(url?.length > 0 && {
+              photos: {
+                connectOrCreate: {
+                  where: { url },
+                  create: { url },
+                },
+              },
+            }),
+          },
+          include: {
+            user: true,
+            photos: true,
+            categories: true,
           },
         });
         if (ok) {

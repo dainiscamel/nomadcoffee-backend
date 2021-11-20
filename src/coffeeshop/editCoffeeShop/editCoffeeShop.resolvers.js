@@ -1,7 +1,6 @@
-import { processCategory } from "../../category/category.utils";
 import client from "../../client";
 import { protectedResolver } from "../../users/users.utils";
-import { processFile } from "../../shared/shared.utils";
+import { processCategory, processFile } from "../../shared/shared.utils";
 
 export default {
   Mutation: {
