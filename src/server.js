@@ -1,6 +1,5 @@
 require("dotenv").config();
 import express from "express";
-import logger from "morgan";
 import { ApolloServer } from "apollo-server-express";
 import { graphqlUploadExpress } from "graphql-upload";
 import { typeDefs, resolvers } from "./schema";
